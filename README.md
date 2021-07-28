@@ -1,8 +1,8 @@
-# wechatpay-guzzle-middleware
+# syxwxpay/wxpay-common-fun
 
 ## 概览
 
-基于[微信支付API v3](https://wechatpay-api.gitbook.io/wechatpay-api-v3/)，再次封装。继承了签名生成丶回调验签丶证书中提取公钥丶报文解密等
+基于[微信支付API v3](https://wechatpay-api.gitbook.io/wechatpay-api-v3/)再次封装。封装了签名生成丶回调验签丶证书中提取公钥丶报文解密等功能
 
 
 
@@ -57,8 +57,8 @@ $data = [
     'apiclient_key'=>__DIR__.'/wxpay_key/apiclient_key.pem', //API安全->申请证书 完成步骤获得的 apiclient_key.pem文件路径
     'cert'=>__DIR__.'/wxpay_key/cert.pem' //获取平台证书接口中获取的 平台证书文件路径 获取方法可查看下方的【## 获取平台证书】
 ];
-WxPayFun\WxPayConfig::initConfig($data); //必须初始化
-$test = new WxPayFun\WxPayFun();
+\WxPayFun\WxPayConfig::initConfig($data); //必须初始化
+$test = new \WxPayFun\WxPayFun();
 
 //接下来，正常使用Guzzle发起API请求  可以参照微信支付API列表进行传参
 $client  = $test->relatedConfig();
@@ -111,8 +111,8 @@ $data = [
     'wx_appid'=>'1', //微信appid
     'apiclient_key'=>__DIR__.'/wxpay_key/apiclient_key.pem', //API安全->申请证书 完成步骤获得的 apiclient_key.pem文件路径
 ];
-WxPayFun\WxPayConfig::initConfig($data); //必须初始化
-$test = new WxPayFun\WxPayFun();
+\WxPayFun\WxPayConfig::initConfig($data); //必须初始化
+$test = new \WxPayFun\WxPayFun();
 
 /**
  * 获取/更新 证书和编号
@@ -134,8 +134,8 @@ $test = new WxPayFun\WxPayFun();
 $data = [
     'cert'=>__DIR__.'/wxpay_key/cert.pem' //获取平台证书接口中获取的 平台证书文件路径
 ];
-WxPayFun\WxPayConfig::initConfig($data); //必须初始化
-$test = new WxPayFun\WxPayFun();
+\WxPayFun\WxPayConfig::initConfig($data); //必须初始化
+$test = new \WxPayFun\WxPayFun();
  /**
  * 验证回调主方法  verifySigns
  * @param $http_data header头的信息（微信回调发送的header头）可用getallheaders()获取
@@ -148,4 +148,39 @@ $red = $test->verifySigns($http_data,$body); //验证{$red}返回 1和0即可
 if($red == 1){
  //你的微信逻辑
 }
+```
+## 报文解密
+```php
+$wx_APIv3 = '1';//APIv3密钥 微信商户平台 -API安全里设置
+$jm = new \WxPayFun\AesUtil($wx_APIv3);
+//参考例子：报文
+$res = '{
+  "data": [
+      {
+          "serial_no": "5157F09EFDC096DE15EBE81A47057A7232F1B8E1",
+          "effective_time ": "2018-06-08T10:34:56+08:00",
+          "expire_time ": "2018-12-08T10:34:56+08:00",
+          "encrypt_certificate": {
+              "algorithm": "AEAD_AES_256_GCM",
+              "nonce": "61f9c719728a",
+              "associated_data": "certificate",
+              "ciphertext": "sRvt… "
+          }
+      },
+      {
+          "serial_no": "50062CE505775F070CAB06E697F1BBD1AD4F4D87",
+          "effective_time ": "2018-12-07T10:34:56+08:00",
+          "expire_time ": "2020-12-07T10:34:56+08:00",
+          "encrypt_certificate": {
+              "algorithm": "AEAD_AES_256_GCM",
+              "nonce": "35f9c719727b",
+              "associated_data": "certificate",
+              "ciphertext": "aBvt… "
+          }
+      }
+  ]
+}';
+$res = json_decode($res,true);
+$enc = $res['data'][0]['encrypt_certificate'];
+$str = $jm->decryptToString($enc['associated_data'],$enc['nonce'],$enc['ciphertext']); //解密之后的数据
 ```
