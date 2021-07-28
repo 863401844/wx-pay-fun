@@ -35,6 +35,11 @@
 composer require syxwxpay/wxpay-common-fun
 ```
 
+#### 第一步使用先引入（如用框架：例如 laravel 则不需要这一步，直接开始下面的步骤即可）
+```
+require "vendor/autoload.php";
+```
+
 
 
 
@@ -43,7 +48,7 @@ composer require syxwxpay/wxpay-common-fun
 
 ```php
 
-//第一步 先加载配置文件
+//先加载配置文件
 $data = [
     'wx_mch_id'=>'1',//商户号
     'serial_no'=>'1',//api证书号(设置v3证书获得的)
@@ -57,8 +62,8 @@ $test = new WxPayFun\WxPayFun();
 
 //接下来，正常使用Guzzle发起API请求  可以参照微信支付API列表进行传参
 $client  = $test->relatedConfig();
-
-$resp = $client->request('POST', 'https://api.mch.weixin.qq.com/v3/pay/transactions/app', [
+try{
+    $resp = $client->request('POST', 'https://api.mch.weixin.qq.com/v3/pay/transactions/app', [
                 'json' => [ // JSON请求体
                     'appid' => 1, //你的appid
                     'mchid' => 1,   //你的商户号
@@ -79,7 +84,7 @@ $resp = $client->request('POST', 'https://api.mch.weixin.qq.com/v3/pay/transacti
              $data = [
                         'appid'=>'',
                         'timestamp'=>time(),
-                        'noncestr'=>$this->makeRandom(32),
+                        'noncestr'=>$test->makeRandom(32), //生成32位的随机字符串
                         'prepayid'=>$resdata['prepay_id']
                      ];
     

@@ -20,7 +20,7 @@ trait WxCertFun
     public function filePutWxCert($filename='wxpay_key'){
 
         $res = $this->getCertificates();
-        $jm = new AesUtil(self::$wx_mch_id);
+        $jm = new AesUtil(self::$wx_APIv3);
         $enc = $res['data'][0]['encrypt_certificate'];
         $serial_no = $res['data'][0]['serial_no']; //证书号
         $str = $jm->decryptToString($enc['associated_data'],$enc['nonce'],$enc['ciphertext']); //证书
