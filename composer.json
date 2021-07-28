@@ -1,0 +1,23 @@
+{
+    "name": "syxwxpay/syx",
+    "description": "基于微信支付封装的方法，继承了：回调签名验证丶证书的获取丶签名的生成丶报文的解密等",
+    "type": "library",
+    "require": {
+        "php": ">= 7.1",
+        "guzzlehttp/guzzle": "^6.3",
+        "wechatpay/wechatpay-guzzle-middleware": "^0.2.0"
+    },
+    "license": "Apache",
+    "authors": [
+        {
+            "name": "shiyuxiang",
+            "email": "syxphp@163.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "WxPayFun\\" : "src/"
+        }
+    }
+}
