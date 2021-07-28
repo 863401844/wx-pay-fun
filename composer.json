@@ -1,5 +1,5 @@
 {
-    "name": "syxwxpay/syx",
+    "name": "syxwxpay/wxpay-common-fun",
     "description": "基于微信支付封装的方法，继承了：回调签名验证丶证书的获取丶签名的生成丶报文的解密等",
     "type": "library",
     "require": {
